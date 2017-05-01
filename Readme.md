@@ -54,17 +54,17 @@ Application will be available on http://localhost:5000
 # Running tests
 
 1. setup virtualenv
-
-    make env
-
+```
+make env
+```
 2. start test db
-
-    make test-db-start
-
+```
+make test-db-start
+```
 3. run pytest
-
-    make test
-
+```
+make test
+```
 
 If you want to use own database for tests, specify `DATABASE_URI`
 
