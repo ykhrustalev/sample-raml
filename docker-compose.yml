@@ -1,0 +1,46 @@
+version: '2'
+services:
+  db:
+    image: postgres:9.6-alpine
+    environment:
+      - POSTGRES_PASSWORD=app
+      - POSTGRES_USER=app
+      - POSTGRES_DB=app
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    expose:
+      - 15432
+    ports:
+      - 15432:5432
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/usr/src/app/app
+      - ./main.py:/usr/src/app/main.py
+    depends_on:
+      - db
+    working_dir: /usr/src/app/
+    command: ["/wait-for-it.sh", "db:5432", "--", "./main.py"]
+    environment:
+      - DATABASE_URI=postgres://app:app@db:5432/app
+    expose:
+      - 5000
+    ports:
+      - 5000:5000
+
+  test-db:
+    image: postgres:9.6-alpine
+    environment:
+      - POSTGRES_PASSWORD=testapp
+      - POSTGRES_USER=testapp
+      - POSTGRES_DB=testapp
+    expose:
+      - 15433
+    ports:
+      - 15433:5432
+
+volumes:
+  db-data: {}
